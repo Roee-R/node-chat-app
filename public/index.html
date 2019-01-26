@@ -8,6 +8,18 @@
     <body>
         <h1>Welcome To my Chat</h1>
 
-
+        <script src='/socket.io/socket.io.js'></script>
+        <script>
+            var socket = io(); //because we loaded we can call it, and that 
+            // we initilate the request from the client to open web socket and keep the connection open
+            // the verible socket is critical to our communicate with the server- lissten for data from the server , and send to the sever
+        
+            socket.on('connect', ()=>{ // this fired from the client side on the consone on F12 when the client get the connection
+                console.log('Connected to the server')
+            })
+            socket.on('disconnect',()=>{
+                console.log('Disconnected from server')
+            })
+        </script>
     </body>
 </html>
