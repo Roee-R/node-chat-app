@@ -21,6 +21,6 @@ io.on('connection',(socket)=>{
     })
 }) // the socket event is fired when we get new connection
 
-server.listen(port, ()=>{ // we change app to server for socket.io use
+app.listen(port, ()=>{ // we change app to server for socket.io use
     console.log(`Server is running on port ${port}`);
 })
