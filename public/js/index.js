@@ -5,7 +5,15 @@ var socket = io(); //because we loaded we can call it, and that
 socket.on('connect',function (){ // this fired from the client side on the consone on F12 when the client get the connection
     console.log('Connected to the server')
 
-    socket.on('newMsg',(msg)=>{
+    socket.on('newUser',function(msg){ // msg just to the user that have connected
+        console.log(msg);
+    })
+
+    socket.on('newUserIn', function(msg){ //msg to all users expect the one who connect
+        console.log(msg);
+    })
+
+    socket.on('newMsg',function(msg){
         console.log('User get new msg', msg)
     })
 

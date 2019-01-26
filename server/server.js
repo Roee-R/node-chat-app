@@ -16,14 +16,31 @@ app.use(express.static(publicPath)); // add the public directory
 io.on('connection',(socket)=>{ // the socket event is fired when we get new connection
     console.log('New connection is made')
 
+    socket.emit('newUser', {
+        from: "admin",
+        text: "Welcome to the chat app",
+        createdAt: new Date().getTime()
+    }); //msg to the user itself
+
+    socket.broadcast.emit('newUserIn', {
+        from: "admin",
+        text: "New user joined",
+        createdAt: new Date().getTime()
+    }); //msg o the rest of users
 
     socket.on('msgCreated', (msg)=>{
         console.log(`New msg created:`, msg)
-        io.emit('newMsg', {
+        io.emit('newMsg', { 
             from: msg.from,
             text: msg.text,
             createdAt: new Date().getTime()
         }) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
+    
+        // socket.broadcast.emit('newMsg', { // Broadcasting means sending a message to everyone else except for the socket that starts it.
+        //     from: msg.from,
+        //     text: msg.text,
+        //     createdAt: new Date().getTime()
+        // })
     })
 
 
