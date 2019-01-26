@@ -13,13 +13,27 @@ var io = socketIo(server) //The server we want to use in socketIo
 
 app.use(express.static(publicPath)); // add the public directory
 
-io.on('connection',(socket)=>{
+io.on('connection',(socket)=>{ // the socket event is fired when we get new connection
     console.log('New connection is made')
 
-    socket.on('disconnect',()=>{
+    socket.emit('newMsg', {
+        from: 'yosi',
+        text: "Hey for yosi",
+        createdAt: 1234132
+    })
+
+    socket.on('msgCreated', (msg)=>{
+        console.log(`New msg created:`, msg)
+    })
+
+
+    socket.on('disconnect',()=>{ // the socket event is fired when we get disconnection
         console.log('client disconnected from server')
     })
-}) // the socket event is fired when we get new connection
+
+ 
+    
+}) 
 
 server.listen(port, ()=>{ // we change app to server for socket.io use
     console.log(`Server is running on port ${port}`);
