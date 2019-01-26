@@ -3,7 +3,7 @@ const express = require('express');
 const socketIo = require('socket.io');
 const http = require('http') // built in node module, for building server (express: app.listen - use it to)
 
-const publicPath = path.join(__dirname, '../public');
+const publicPath = path.join(__dirname, '../public'); //conver path and add public extenion for the __dirname
 const port = process.env.PORT || 3000 ;
 
 var app = express();
@@ -11,7 +11,7 @@ var server = http.createServer(app) // app.listen call this funtion to. //for so
 var io = socketIo(server) //The server we want to use in socketIo
 // io is the web socket server - the io is the way we will comunicate bitween a server and a client
 
-app.use(express.static(publicPath));
+app.use(express.static(publicPath)); // add the public directory
 
 io.on('connection',(socket)=>{
     console.log('New connection is made')
