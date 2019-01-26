@@ -9,10 +9,6 @@ socket.on('connect',function (){ // this fired from the client side on the conso
         console.log('User get new msg', msg)
     })
 
-    socket.emit('msgCreated', {
-        from: "nati",
-        text: "Hi all"
-    })
     
     socket.on('disconnect',function (){
         console.log('Disconnected from server')

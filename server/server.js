@@ -16,14 +16,14 @@ app.use(express.static(publicPath)); // add the public directory
 io.on('connection',(socket)=>{ // the socket event is fired when we get new connection
     console.log('New connection is made')
 
-    socket.emit('newMsg', {
-        from: 'yosi',
-        text: "Hey for yosi",
-        createdAt: 1234132
-    })
 
     socket.on('msgCreated', (msg)=>{
         console.log(`New msg created:`, msg)
+        io.emit('newMsg', {
+            from: msg.from,
+            text: msg.text,
+            createdAt: new Date().getTime()
+        }) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
     })
 
 
