@@ -3,6 +3,7 @@ const express = require('express');
 const socketIo = require('socket.io');
 const http = require('http') // built in node module, for building server (express: app.listen - use it to)
 
+const {generateMessage} = require('./utils/message')
 const publicPath = path.join(__dirname, '../public'); //conver path and add public extenion for the __dirname
 const port = process.env.PORT || 3000 ;
 
@@ -16,26 +17,17 @@ app.use(express.static(publicPath)); // add the public directory
 io.on('connection',(socket)=>{ // the socket event is fired when we get new connection
     console.log('New connection is made')
 
-    socket.emit('newUser', {
-        from: "admin",
-        text: "Welcome to the chat app",
-        createdAt: new Date().getTime()
-    }); //msg to the user itself
+    socket.emit('newUser',
+    generateMessage("admin", "Welcome to the chat app")); //msg to the user itself
 
-    socket.broadcast.emit('newUserIn', {
-        from: "admin",
-        text: "New user joined",
-        createdAt: new Date().getTime()
-    }); //msg o the rest of users
+    socket.broadcast.emit('newUserIn',
+    generateMessage("admin", "New user joined")); //msg to the rest of users
 
-    socket.on('msgCreated', (msg)=>{
+    socket.on('msgCreated', (msg, collback)=>{
         console.log(`New msg created:`, msg)
-        io.emit('newMsg', { 
-            from: msg.from,
-            text: msg.text,
-            createdAt: new Date().getTime()
-        }) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
-    
+        io.emit('newMsg',generateMessage(msg.from,msg.text)) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
+       // collback('Data from the server'); // the collback from the index.js acknoledgment
+       
         // socket.broadcast.emit('newMsg', { // Broadcasting means sending a message to everyone else except for the socket that starts it.
         //     from: msg.from,
         //     text: msg.text,

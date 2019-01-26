@@ -17,7 +17,13 @@ socket.on('connect',function (){ // this fired from the client side on the conso
         console.log('User get new msg', msg)
     })
 
-    
+    socket.emit('msgCreated',{
+        from: "Robert",
+        text: "Hello guys"
+    },function (data) { // the successful acknoledgment to the sever
+        console.log('Got it! '+data)
+    })
+
     socket.on('disconnect',function (){
         console.log('Disconnected from server')
     })
