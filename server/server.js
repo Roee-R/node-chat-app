@@ -17,10 +17,10 @@ app.use(express.static(publicPath)); // add the public directory
 io.on('connection',(socket)=>{ // the socket event is fired when we get new connection
     console.log('New connection is made')
 
-    socket.emit('newUser',
+    socket.emit('newMsg',
     generateMessage("admin", "Welcome to the chat app")); //msg to the user itself
 
-    socket.broadcast.emit('newUserIn',
+    socket.broadcast.emit('newMsg',
     generateMessage("admin", "New user joined")); //msg to the rest of users
 
     socket.on('msgCreated', (msg, collback)=>{
@@ -30,7 +30,7 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
        
         socket.on('createLocationMessage', (coords)=>{
             console.log("new coords",`${coords.latitude}, ${coords.longitude}`)
-            io.emit('newMsg',generateMessage('admin',`${coords.latitude}, ${coords.longitude}`))
+            io.emit('newMsg',generateMessage('admin',`${coords.latitude}, ${coords.logitude}`))
         })
     })
 
