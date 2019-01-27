@@ -29,7 +29,6 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
         collback('Data from the server'); // the collback from the index.js acknoledgment
        
         socket.on('createLocationMessage', (coords)=>{
-            alert(`${coords.latitude}, ${coords.longitude}`);
             io.emit('newMsg',generateMessage('admin',`${coords.latitude}, ${coords.longitude}`))
         })
     })
