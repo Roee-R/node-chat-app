@@ -35,13 +35,14 @@ socket.on('connect',function (){ // this fired from the client side on the conso
     // })
 
     jQuery('#message-form').on('submit', function(e){ // jquery form by id 
-        var msg = jQuery('[name=message]').val();// get the input text of the user from UI
+        var messageTextBox = jQuery('[name=message]');                                                              
+        var msg = messageTextBox.val();// get the input text of the user from UI
         e.preventDefault(); // to prevent page refresh
         socket.emit('msgCreated', {
             from: 'User',
             text: msg 
         }, function(){
-
+            messageTextBox.val('')
         })
     })
 
@@ -50,12 +51,15 @@ socket.on('connect',function (){ // this fired from the client side on the conso
         if(!navigator.geolocation){
             return alert('Geolocaton do not support your browser')
         }
+        locationB.attr('disabled', 'disabled').text('Sending location');
         navigator.geolocation.getCurrentPosition(function(position){
+            locationB.removeAttr('disabled').text('Send location');
             socket.emit('createLocationMessage',{
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
             })
         }, function(){
+            locationB.removeAttr('disabled').text('Send location');
             alert('Unable to fetch your locaton')
         })
     })
