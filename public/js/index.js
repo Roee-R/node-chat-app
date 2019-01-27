@@ -10,18 +10,21 @@ socket.on('connect',function (){ // this fired from the client side on the conso
     })
 
     socket.on('newMsg',function(msg){
+        var formattedTime = moment(msg.createdAt).format('h:mm a');
         console.log('User get new msg', msg)
         var li = jQuery('<li></li>');
-        li.text(`${msg.from}: ${msg.text}`)
+        li.text(`${msg.from} ${formattedTime}: ${msg.text}`)
         jQuery('#messages').append(li) // append after the last child of #message to the li array
     })
 
     socket.on('newLocationMsg',function(msg){
+        var formattedTime = moment(msg.createdAt).format('h:mm a');
+
         console.log('User get new msg', msg)
         var li = jQuery('<li></li>');
         var a = jQuery('<a target="_blank">My current location</a>')
 
-        li.text(`${msg.from}: `);
+        li.text(`${msg.from} ${formattedTime} `);
         a.attr('href', msg.url);
         li.append(a);
         jQuery('#messages').append(li) // append after the last child of #message to the li array
