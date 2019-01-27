@@ -30,7 +30,7 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
        
         socket.on('createLocationMessage', (coords)=>{
             console.log("new coords",`${coords.latitude}, ${coords.longitude}`)
-            io.emit('newMsg',generateMessage('admin',`${coords.latitude}, ${coords.logitude}`))
+            io.emit('newMsg',generateMessage('admin',`${coords.latitude}, ${coords.longitude}`))
         })
     })
 
