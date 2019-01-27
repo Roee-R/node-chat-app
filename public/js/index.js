@@ -13,21 +13,21 @@ socket.on('connect',function (){ // this fired from the client side on the conso
         console.log(msg);
         var li = jQuery('<li></li>');
         li.text(`${msg.from}: ${msg.text}`)
-        jQuery('#message').append(li)
+        jQuery('#messages').append(li)
     })
 
     socket.on('newUserIn', function(msg){ //msg to all users expect the one who connect
         console.log(msg);
         var li = jQuery('<li></li>');
         li.text(`${msg.from}: ${msg.text}`)
-        jQuery('#message').append(li)
+        jQuery('#messages   ').append(li)
     })
 
     socket.on('newMsg',function(msg){
         console.log('User get new msg', msg)
         var li = jQuery('<li></li>');
         li.text(`${msg.from}: ${msg.text}`)
-        jQuery('#message').append(li) // append after the last child of #message to the li array
+        jQuery('#messages').append(li) // append after the last child of #message to the li array
     })
 
     // socket.emit('msgCreated',{ // automatacly emit msg
@@ -38,22 +38,27 @@ socket.on('connect',function (){ // this fired from the client side on the conso
     // })
 
     jQuery('#message-form').on('submit', function(e){ // jquery form by id 
+        var msg = jQuery('[name=message]').val();// get the input text of the user from UI
         e.preventDefault(); // to prevent page refresh
-
+        if(msg){
         socket.emit('msgCreated', {
             from: 'User',
-            text: jQuery('[name=message]').val() // get the input text of the user from UI
+            text: msg 
         }, function(){
 
-        })
+        })}
     })
+
     var locationB = jQuery('#getLocation');
     locationB.on('click', function(){
         if(!navigator.geolocation){
             return alert('Geolocaton do not support your browser')
         }
         navigator.geolocation.getCurrentPosition(function(position){
-            console.log(position)
+            socket.emit('createLocationMessage',{
+                latitude: location.latitude,
+                longitude: location.longitude
+            })
         }, function(){
             alert('Unable to fetch your locaton')
         })

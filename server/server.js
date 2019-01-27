@@ -28,11 +28,9 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
         io.emit('newMsg',generateMessage(msg.from,msg.text)) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
         collback('Data from the server'); // the collback from the index.js acknoledgment
        
-        // socket.broadcast.emit('newMsg', { // Broadcasting means sending a message to everyone else except for the socket that starts it.
-        //     from: msg.from,
-        //     text: msg.text,
-        //     createdAt: new Date().getTime()
-        // })
+        socket.on('createLocationMessage', (coords)=>{
+            io.emit('msgCreated','admin',`${coords.latitude}, ${coords.lotitude}`)
+        })
     })
 
 
