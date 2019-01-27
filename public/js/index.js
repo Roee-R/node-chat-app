@@ -41,8 +41,8 @@ socket.on('connect',function (){ // this fired from the client side on the conso
         }
         navigator.geolocation.getCurrentPosition(function(position){
             socket.emit('createLocationMessage',{
-                latitude: location.latitude,
-                logitude: location.logitude
+                latitude: position.latitude,
+                logitude: position.logitude
             })
         }, function(){
             alert('Unable to fetch your locaton')
