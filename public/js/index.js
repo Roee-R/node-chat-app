@@ -11,10 +11,16 @@ socket.on('connect',function (){ // this fired from the client side on the conso
 
     socket.on('newUser',function(msg){ // msg just to the user that have connected
         console.log(msg);
+        var li = jQuery('<li></li>');
+        li.text(`${msg}`)
+        jQuery('#message').append(li)
     })
 
     socket.on('newUserIn', function(msg){ //msg to all users expect the one who connect
         console.log(msg);
+        var li = jQuery('<li></li>');
+        li.text(`${msg}`)
+        jQuery('#message').append(li)
     })
 
     socket.on('newMsg',function(msg){
