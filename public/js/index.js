@@ -40,13 +40,12 @@ socket.on('connect',function (){ // this fired from the client side on the conso
     jQuery('#message-form').on('submit', function(e){ // jquery form by id 
         var msg = jQuery('[name=message]').val();// get the input text of the user from UI
         e.preventDefault(); // to prevent page refresh
-        if(msg){
         socket.emit('msgCreated', {
             from: 'User',
             text: msg 
         }, function(){
 
-        })}
+        })
     })
 
     var locationB = jQuery('#getLocation');

@@ -29,7 +29,7 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
         collback('Data from the server'); // the collback from the index.js acknoledgment
        
         socket.on('createLocationMessage', (coords)=>{
-            io.emit('msgCreated','admin',`${coords.latitude}, ${coords.lotitude}`)
+            io.emit('newMsg',generateMessage('admin',`${coords.latitude}, ${coords.lotitude}`))
         })
     })
 
