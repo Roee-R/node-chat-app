@@ -2,6 +2,22 @@ var socket = io(); //because we loaded we can call it, and that
 // we initilate the request from the client to open web socket and keep the connection open
 // the verible socket is critical to our communicate with the server- lissten for data from the server , and send to the sever
 
+function scrollToBottom(){
+    // selectors
+    var messages = jQuery('#messages'); 
+    var newMessage = messages.children('li:last-child');// Last element
+    // Height
+    var clientHeight = messages.prop('clientHeight') // returns the viewable height of an element in pixels, including padding, but not the border, scrollbar or margin(what he actuly see on the ui)
+    var scrollTop = messages.prop('scrollTop') // returns the number of pixels an element's content is scrolled vertically(how much we scroll down from the top)
+    var scrollHeight = messages.prop('scrollHeight') //  the entire height of an element in pixels, including padding, but not the border, scrollbar or margin.(the height of all messeges)
+    var newMessageHeight = newMessage.innerHeight(); //Last msg height
+    var lastMessageHeight = newMessage.prev().innerHeight(); // Before last msg height
+
+    if(clientHeight+scrollTop+newMessageHeight+lastMessageHeight>=scrollHeight){ // check if by the coluclation we need to scrol down for the user in the chat
+        messages.scrollTop(scrollHeight) //scroll down 
+    }
+}// whether or not we should scroll the user to the bottom, depend on their position
+
 socket.on('connect',function (){ // this fired from the client side on the consone on F12 when the client get the connection
     console.log('Connected to the server')
 
@@ -18,6 +34,7 @@ socket.on('connect',function (){ // this fired from the client side on the conso
             createdAt: formattedTime
         }); // The mustache buid template
         jQuery('#messages').append(html)
+        scrollToBottom();
     })
 
     socket.on('newLocationMsg',function(msg){
@@ -29,15 +46,7 @@ socket.on('connect',function (){ // this fired from the client side on the conso
             url: msg.url
         }); // The mustache buid template
         jQuery('#messages').append(html)
-
-        // console.log('User get new msg', msg)
-        // var li = jQuery('<li></li>');
-        // var a = jQuery('<a target="_blank">My current location</a>')
-
-        // li.text(`${msg.from} ${formattedTime} `);
-        // a.attr('href', msg.url);
-        // li.append(a);
-        // jQuery('#messages').append(li) // append after the last child of #message to the li array
+        scrollToBottom();
     })
 
     // socket.emit('msgCreated',{ // automatacly emit msg
