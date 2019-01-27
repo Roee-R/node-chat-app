@@ -47,6 +47,16 @@ socket.on('connect',function (){ // this fired from the client side on the conso
 
         })
     })
-
+    var locationB = jQuery('#getLocation');
+    locationB.on('click', function(){
+        if(!navigator.geolocation){
+            return alert('Geolocaton do not support your browser')
+        }
+        navigator.geolocation.getCurrentPosition(function(position){
+            console.log(position)
+        }, function(){
+            alert('Unable to fetch your locaton')
+        })
+    })
 
 })
