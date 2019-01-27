@@ -26,7 +26,7 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
     socket.on('msgCreated', (msg, collback)=>{
         console.log(`New msg created:`, msg)
         io.emit('newMsg',generateMessage(msg.from,msg.text)) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
-       // collback('Data from the server'); // the collback from the index.js acknoledgment
+        collback('Data from the server'); // the collback from the index.js acknoledgment
        
         // socket.broadcast.emit('newMsg', { // Broadcasting means sending a message to everyone else except for the socket that starts it.
         //     from: msg.from,
