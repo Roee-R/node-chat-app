@@ -11,23 +11,33 @@ socket.on('connect',function (){ // this fired from the client side on the conso
 
     socket.on('newMsg',function(msg){
         var formattedTime = moment(msg.createdAt).format('h:mm a');
-        console.log('User get new msg', msg)
-        var li = jQuery('<li></li>');
-        li.text(`${msg.from} ${formattedTime}: ${msg.text}`)
-        jQuery('#messages').append(li) // append after the last child of #message to the li array
+        var template = jQuery('#message-template').html(); // takes the html tags of the class id
+        var html = Mustache.render(template,{
+            from: msg.from,
+            text: msg.text,
+            createdAt: formattedTime
+        }); // The mustache buid template
+        jQuery('#messages').append(html)
     })
 
     socket.on('newLocationMsg',function(msg){
         var formattedTime = moment(msg.createdAt).format('h:mm a');
+        var template = jQuery('#location-message-template').html(); // takes the html tags of the class id
+        var html = Mustache.render(template,{
+            from: msg.from,
+            createdAt: formattedTime,
+            url: msg.url
+        }); // The mustache buid template
+        jQuery('#messages').append(html)
 
-        console.log('User get new msg', msg)
-        var li = jQuery('<li></li>');
-        var a = jQuery('<a target="_blank">My current location</a>')
+        // console.log('User get new msg', msg)
+        // var li = jQuery('<li></li>');
+        // var a = jQuery('<a target="_blank">My current location</a>')
 
-        li.text(`${msg.from} ${formattedTime} `);
-        a.attr('href', msg.url);
-        li.append(a);
-        jQuery('#messages').append(li) // append after the last child of #message to the li array
+        // li.text(`${msg.from} ${formattedTime} `);
+        // a.attr('href', msg.url);
+        // li.append(a);
+        // jQuery('#messages').append(li) // append after the last child of #message to the li array
     })
 
     // socket.emit('msgCreated',{ // automatacly emit msg
