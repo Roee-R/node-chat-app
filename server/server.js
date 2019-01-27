@@ -3,7 +3,7 @@ const express = require('express');
 const socketIo = require('socket.io');
 const http = require('http') // built in node module, for building server (express: app.listen - use it to)
 
-const {generateMessage} = require('./utils/message')
+const {generateMessage, generateLocationMessage} = require('./utils/message')
 const publicPath = path.join(__dirname, '../public'); //conver path and add public extenion for the __dirname
 const port = process.env.PORT || 3000 ;
 
@@ -27,13 +27,12 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
         console.log(`New msg created:`, msg)
         io.emit('newMsg',generateMessage(msg.from,msg.text)) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
         collback('Data from the server'); // the collback from the index.js acknoledgment
-       
-        socket.on('createLocationMessage', (coords)=>{
-            console.log("new coords",`${coords.latitude}, ${coords.longitude}`)
-            io.emit('newMsg',generateMessage('admin',`${coords.latitude}, ${coords.longitude}`))
-        })
     })
 
+    socket.on('createLocationMessage', (coords)=>{
+        console.log("new coords",`${coords.latitude}, ${coords.longitude}`)
+        io.emit('newLocationMsg',generateLocationMessage('admin',coords.latitude, coords.longitude))
+    })
 
     socket.on('disconnect',()=>{ // the socket event is fired when we get disconnection
         console.log('client disconnected from server')

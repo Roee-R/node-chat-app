@@ -16,6 +16,17 @@ socket.on('connect',function (){ // this fired from the client side on the conso
         jQuery('#messages').append(li) // append after the last child of #message to the li array
     })
 
+    socket.on('newLocationMsg',function(msg){
+        console.log('User get new msg', msg)
+        var li = jQuery('<li></li>');
+        var a = jQuery('<a target="_blank">My current location</a>')
+
+        li.text(`${msg.from}: `);
+        a.attr('href', msg.url);
+        li.append(a);
+        jQuery('#messages').append(li) // append after the last child of #message to the li array
+    })
+
     // socket.emit('msgCreated',{ // automatacly emit msg
     //     from: "Robert",
     //     text: "Hello guys"
