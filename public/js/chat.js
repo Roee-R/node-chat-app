@@ -18,72 +18,90 @@ function scrollToBottom(){
     }
 }// whether or not we should scroll the user to the bottom, depend on their position
 
-socket.on('connect',function (){ // this fired from the client side on the consone on F12 when the client get the connection
-    console.log('Connected to the server')
+socket.on('connect',function (){ // this fired from the client side on the consone on F12 when the client get the connection- built-in function
+    var params = jQuery.deparam(window.location.search); // takes the user input and turn it to object
 
-    socket.on('disconnect',function (){
-        console.log('Disconnected from server')
-    })
-
-    socket.on('newMsg',function(msg){
-        var formattedTime = moment(msg.createdAt).format('h:mm a');
-        var template = jQuery('#message-template').html(); // takes the html tags of the class id
-        var html = Mustache.render(template,{
-            from: msg.from,
-            text: msg.text,
-            createdAt: formattedTime
-        }); // The mustache buid template
-        jQuery('#messages').append(html)
-        scrollToBottom();
-    })
-
-    socket.on('newLocationMsg',function(msg){
-        var formattedTime = moment(msg.createdAt).format('h:mm a');
-        var template = jQuery('#location-message-template').html(); // takes the html tags of the class id
-        var html = Mustache.render(template,{
-            from: msg.from,
-            createdAt: formattedTime,
-            url: msg.url
-        }); // The mustache buid template
-        jQuery('#messages').append(html)
-        scrollToBottom();
-    })
-
-    // socket.emit('msgCreated',{ // automatacly emit msg
-    //     from: "Robert",
-    //     text: "Hello guys"
-    // },function (data) { // the successful acknoledgment to the sever
-    //     console.log('Got it! '+data)
-    // })
-
-    jQuery('#message-form').on('submit', function(e){ // jquery form by id 
-        var messageTextBox = jQuery('[name=message]');                                                              
-        var msg = messageTextBox.val();// get the input text of the user from UI
-        e.preventDefault(); // to prevent page refresh
-        socket.emit('msgCreated', {
-            from: 'User',
-            text: msg 
-        }, function(){
-            messageTextBox.val('')
-        })
-    })
-
-    var locationB = jQuery('#getLocation');
-    locationB.on('click', function(){
-        if(!navigator.geolocation){
-            return alert('Geolocaton do not support your browser')
+    socket.emit('join', params, function (err){
+        if(err){
+            alert(err);
+            window.location.href = '/';
         }
-        locationB.attr('disabled', 'disabled').text('Sending location');
-        navigator.geolocation.getCurrentPosition(function(position){
-            locationB.removeAttr('disabled').text('Send location');
-            socket.emit('createLocationMessage',{
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude
-            })
-        }, function(){
-            locationB.removeAttr('disabled').text('Send location');
-            alert('Unable to fetch your locaton')
-        })
+        else{
+            console.log('No errors')
+        }
     })
-
 })
+
+socket.on('disconnect',function (){
+    console.log('Disconnected from server')
+})
+
+socket.on('updateUserList', function(users){
+    var ol = jQuery('<ol></ol>');
+
+    users.forEach(function(user){
+        ol.append(jQuery('<li></li>').text(user));
+    })
+    jQuery('#users').html(ol);
+})
+socket.on('newMsg',function(msg){
+    var formattedTime = moment(msg.createdAt).format('h:mm a');
+    var template = jQuery('#message-template').html(); // takes the html tags of the class id
+    var html = Mustache.render(template,{
+        from: msg.from,
+        text: msg.text,
+        createdAt: formattedTime
+    }); // The mustache buid template
+    jQuery('#messages').append(html)
+    scrollToBottom();
+})
+
+socket.on('newLocationMsg',function(msg){
+    var formattedTime = moment(msg.createdAt).format('h:mm a');
+    var template = jQuery('#location-message-template').html(); // takes the html tags of the class id
+    var html = Mustache.render(template,{
+        from: msg.from,
+        createdAt: formattedTime,
+        url: msg.url
+    }); // The mustache buid template
+    jQuery('#messages').append(html)
+    scrollToBottom();
+})
+
+// socket.emit('msgCreated',{ // automatacly emit msg
+//     from: "Robert",
+//     text: "Hello guys"
+// },function (data) { // the successful acknoledgment to the sever
+//     console.log('Got it! '+data)
+// })
+
+jQuery('#message-form').on('submit', function(e){ // jquery form by id 
+    var messageTextBox = jQuery('[name=message]');                                                              
+    var msg = messageTextBox.val();// get the input text of the user from UI
+    e.preventDefault(); // to prevent page refresh
+    socket.emit('msgCreated', {
+        from: 'User',
+        text: msg 
+    }, function(){
+        messageTextBox.val('')
+    })
+})
+
+var locationB = jQuery('#getLocation');
+locationB.on('click', function(){
+    if(!navigator.geolocation){
+        return alert('Geolocaton do not support your browser')
+    }
+    locationB.attr('disabled', 'disabled').text('Sending location');
+    navigator.geolocation.getCurrentPosition(function(position){
+        locationB.removeAttr('disabled').text('Send location');
+        socket.emit('createLocationMessage',{
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        })
+    }, function(){
+        locationB.removeAttr('disabled').text('Send location');
+        alert('Unable to fetch your locaton')
+    })
+})
+
