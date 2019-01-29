@@ -68,19 +68,11 @@ socket.on('newLocationMsg',function(msg){
     scrollToBottom();
 })
 
-// socket.emit('msgCreated',{ // automatacly emit msg
-//     from: "Robert",
-//     text: "Hello guys"
-// },function (data) { // the successful acknoledgment to the sever
-//     console.log('Got it! '+data)
-// })
-
 jQuery('#message-form').on('submit', function(e){ // jquery form by id 
     var messageTextBox = jQuery('[name=message]');                                                              
     var msg = messageTextBox.val();// get the input text of the user from UI
     e.preventDefault(); // to prevent page refresh
     socket.emit('msgCreated', {
-        from: 'User',
         text: msg 
     }, function(){
         messageTextBox.val('')

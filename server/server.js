@@ -40,21 +40,25 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
     })
 
     socket.on('msgCreated', (msg, collback)=>{
-        console.log(`New msg created:`, msg)
-        io.emit('newMsg',generateMessage(msg.from,msg.text)) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
+        var user =users.getUser(socket.id);
+        if(user && isRealString(msg.text)){
+            io.to(user.room).emit('newMsg',generateMessage(user.name,msg.text)) // io.emit in contrast to socket.emit, this emit to every single connection in the server 
+        }
+
         collback('Data from the server'); // the collback from the index.js acknoledgment
     })
 
     socket.on('createLocationMessage', (coords)=>{
-        console.log("new coords",`${coords.latitude}, ${coords.longitude}`)
-        io.emit('newLocationMsg',generateLocationMessage('admin',coords.latitude, coords.longitude))
+        var user = users.getUser(socket.id);
+        if(user){
+            io.to(user.room).emit('newLocationMsg',generateLocationMessage(user.name,coords.latitude, coords.longitude))
+        }
     })
 
     socket.on('disconnect',()=>{ // the socket event is fired when we get disconnection
         console.log('client disconnected from server');
         var user = users.removeUser(socket.id);
         if(user){
-            console.log("user", user)
             io.to(user.room).emit('updateUserList', users.getUserList(user.room))
             io.to(user.room).emit('newMsg', generateMessage('admin', `${user.name} has left.`));
         }
