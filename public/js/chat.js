@@ -23,6 +23,7 @@ socket.on('connect',function (){ // this fired from the client side on the conso
     var params = jQuery.deparam(window.location.search); // takes the user input and turn it to object
     if(params.selectedRoom!==undefined && params.selectedRoom!==''){
         params.room=params.selectedRoom;} // set params.room to be the select element or the text room E
+
     socket.emit('join', params, function (err){
         if(err){
             alert(err);
@@ -37,7 +38,6 @@ socket.on('connect',function (){ // this fired from the client side on the conso
 })
 
 socket.on('redirectToIndex',function(){
-    alert(1)
     window.location.href = '/';
 })
 

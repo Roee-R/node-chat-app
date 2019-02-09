@@ -21,7 +21,7 @@ export function generateAdminList(admin,users) {
             ol.append(li);
         }
         else{
-            var button = $(`<button id="${user} "class="remove" style="float: right; margin-right:10px;height:40px;background-color: darkcyan;">X</button>`);
+            var button = $(`<button id="${user}" class="remove" style="float: right; margin-right:10px;height:40px;background-color: darkcyan;">X</button>`);
             ol.append(button).append(li); //add button- remove user from room 
         }
 
