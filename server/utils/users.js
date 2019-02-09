@@ -27,6 +27,9 @@ class Users {
     
         return usersNameArray
     }
+    findUserByName(name){
+        return this.users.filter((user)=>user.name.trim()===name)[0];
+    }
 }
 
 module.exports = {Users}

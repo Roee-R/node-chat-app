@@ -7,9 +7,10 @@ class Rooms{
     constructor(){
         this.rooms = [];
     }
-    addRoom(roomName, admin){
-        var room = new Room(roomName, admin);
-        if(this.getRoom(room)!=null){
+
+    addRoom(roomName, admin, users){
+        var room = new Room(roomName, admin,users);
+        if(this.getRoom(room.roomName).length===0){
             this.rooms.push(room);
         }
         return room
@@ -38,14 +39,19 @@ class Rooms{
             return room[0].users
         }
     }
+    findAdmin(roomName){
+        return this.rooms.map((room)=>room.admin);
+    }
+
 }
 
 class Room{
-    constructor(roomName,admin){
+    constructor(roomName,admin,users){
         this.roomName =roomName;
         this.admin=admin;
-        this.users=0;
+        this.users=users;
     }
+
 }
 
-module.exports = {Rooms}
+module.exports = {Rooms,Room}

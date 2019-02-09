@@ -10,6 +10,7 @@
     <body class="chat">
         
         <div class="chat__sidebar">
+            <div id="groupName"></div>
             <h3>Users</h3>
             <div id="users"></div>
         </div>
@@ -55,6 +56,9 @@
         <script src="./js/libs/moment.min.js"></script>
         <script src="./js/libs/mustache.js"></script>
         <script src="./js/libs/deparam.js"></script>
-        <script src='./js/chat.js'></script>
+        <script src="./js/libs/generateList.js" type="module">
+        </script>
+        <script type="module" src='./js/chat.js'>
+</script>
     </body>
 </html>

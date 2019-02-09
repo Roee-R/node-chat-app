@@ -1,6 +1,8 @@
 var socket = io(); //because we loaded we can call it, and that 
 // we initilate the request from the client to open web socket and keep the connection open
 // the verible socket is critical to our communicate with the server- lissten for data from the server , and send to the sever
+import {generateUserList,generateAdminList} from "./libs/generateList.js"
+
 function scrollToBottom(){
     // selectors
     var messages = jQuery('#messages'); 
@@ -19,30 +21,37 @@ function scrollToBottom(){
 
 socket.on('connect',function (){ // this fired from the client side on the consone on F12 when the client get the connection- built-in function
     var params = jQuery.deparam(window.location.search); // takes the user input and turn it to object
-    
+    if(params.selectedRoom!==undefined && params.selectedRoom!==''){
+        params.room=params.selectedRoom;} // set params.room to be the select element or the text room E
     socket.emit('join', params, function (err){
         if(err){
             alert(err);
             window.location.href = '/';
         }
         else{
+            var h1 = jQuery(`<h1>Group ${params.room}</h1>`).css({"font-size":22,"color":"#778899", "margin-left":"20px","border-bottom": "4px solid #778899"});
+            $('#groupName').html(h1)
             console.log('No errors')
         }
     })
+})
+
+socket.on('redirectToIndex',function(){
+    alert(1)
+    window.location.href = '/';
 })
 
 socket.on('disconnect',function (){
     console.log('Disconnected from server')
 })
 
-socket.on('updateUserList', function(users){
-    var ol = jQuery('<ol></ol>');
-
-    users.forEach(function(user){
-        ol.append(jQuery('<li></li>').text(user));
-    })
-    jQuery('#users').html(ol);
+socket.on('updateUserList', function(admin,users){
+    generateUserList(admin,users);
 })
+socket.on('updateAdminList', function(admin,users){
+    return generateAdminList(admin,users);
+})
+
 socket.on('newMsg',function(msg){
     var formattedTime = moment(msg.createdAt).format('h:mm a');
     var template = jQuery('#message-template').html(); // takes the html tags of the class id
@@ -96,3 +105,8 @@ locationB.on('click', function(){
     })
 })
 
+
+
+$(document).on('click', '.remove', function(event){ 
+    socket.emit("removeUser", event.target.id)
+});
