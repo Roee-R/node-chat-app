@@ -24,7 +24,7 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
 
     socket.on('join',(params, collback)=>{ //collback is the ecknolodgment
         
-        let user = users.getUserList(params.room).filter((name)=>name.toLowerCase().trim()===params.name.toLowerCase().trim())
+        let user = users.getAllUsers().filter((name)=>name.toLowerCase().trim()===params.name.toLowerCase().trim())
 
         if(!isRealString(params.name) || (!isRealString(params.room)&&!isRealString(params.selectedRoom))){
             return collback(`Name and room name are required: ${params.name} ${params.room}`) //err msg
@@ -46,25 +46,22 @@ io.on('connection',(socket)=>{ // the socket event is fired when we get new conn
         // socket.leave(disconnect the user from the room)
         users.removeUser(socket.id); // ensure that there is no user with this id - remove from any potensial previous rooms 
         users.addUser(socket.id, params.name, params.room); //add new user to users class
-        if(params.name!==rooms.getRoom(params.room)[0].admin){ // if statement for update the regular users list
+        try{
             let admin = rooms.findAdmin(params.room);
+            console.log(`admin: ${admin}, params.room: ${params.room}`)
             userId = users.findUserByName(admin.toString()).id
-            io.to(params.room).emit('updateUserList',rooms.getRoom(params.room)[0].admin, users.getUserList(params.room)); // update the user list of the room
-            socket.broadcast.to(userId).emit('updateAdminList', rooms.getRoom(params.room)[0].admin, users.getUserList(params.room));
-        } 
-        else{ // else statement for update the admin user list
-            try{
-                let admin = rooms.findAdmin(params.room);
-                userId = users.findUserByName(admin.toString()).id
+            if(params.name!==rooms.getRoom(params.room)[0].admin){ // if statement for update the regular users list
+                io.to(params.room).emit('updateUserList',rooms.getRoom(params.room)[0].admin, users.getUserList(params.room)); // update the user list of the room
+                socket.broadcast.to(userId).emit('updateAdminList', rooms.getRoom(params.room)[0].admin, users.getUserList(params.room));
+            } 
+            else{ // else statement for update the admin user list
                 socket.broadcast.to(params.room).emit('updateUserList',rooms.getRoom(params.room)[0].admin, users.getUserList(params.room)); // update the user list of the room
                 socket.emit('updateAdminList',rooms.getRoom(params.room)[0].admin, users.getUserList(params.room)); // update the user list of the room
             }
-            catch{
-                throw new Error("Failed to find admin room")
-            }
-        }
-
-
+        }    
+        catch{
+            console.log("Admin user not found ")
+        }    
         socket.emit('newMsg',
         generateMessage("admin", "Welcome to the chat app")); //msg to the user itself
         socket.broadcast.to(params.room).emit('newMsg', // the to send the message just to the socket with the name of params.room

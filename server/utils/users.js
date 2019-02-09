@@ -27,6 +27,9 @@ class Users {
     
         return usersNameArray
     }
+    getAllUsers(){
+        return this.users.map((user)=>user.name)
+    }
     findUserByName(name){
         return this.users.filter((user)=>user.name.trim()===name)[0];
     }

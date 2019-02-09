@@ -50,5 +50,9 @@ describe('Rooms', ()=>{
         let footballUser1 = testRooms.rooms.find((room)=>room.roomName==="Football")
         expect(footballUser1.users).toBe(44);
     })
+    it('should find admin',()=>{
+        admin = testRooms.findAdmin('Trips')
+        expect(admin).toBe('Yosi');
+    })
 })
 

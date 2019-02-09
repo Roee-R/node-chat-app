@@ -70,6 +70,10 @@ describe('User', ()=>{
         expect(users.getUser('1111')).toBeFalsy()
     })
 
+    it('should return all users', ()=>{
+        expect(users.getAllUsers()).toEqual(['Dani','Yosi','Lee','Nira'])
+    })
+
     it('should return names for node course', ()=>{
         expect(users.getUserList('FIFA_19-XBOX_ONE').length).toBe(2)
     })

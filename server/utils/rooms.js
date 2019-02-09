@@ -40,7 +40,8 @@ class Rooms{
         }
     }
     findAdmin(roomName){
-        return this.rooms.map((room)=>room.admin);
+        let room= this.rooms.filter((room)=>room.roomName===roomName);
+        return room[0].admin
     }
 
 }
